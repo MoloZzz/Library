@@ -1,7 +1,22 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { GenresService } from './genres.service';
-import { ApiOperation, ApiCookieAuth, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiCookieAuth,
+  ApiTags,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { CodeEntryDto } from 'src/common/dto/common/code-entry-dto.dto';
+import { CreateGenreDto } from 'src/common/dto/genres/create-genre-dto.dto';
+import { UpdateGenreDto } from 'src/common/dto/genres/update-genre-dto.dto';
 
 @ApiTags('Жанри')
 @Controller('genres')
@@ -18,7 +33,34 @@ export class GenresController {
   @Get('/:code')
   @ApiOperation({ summary: 'Повертає жанр по коду' })
   @ApiCookieAuth()
-  public async getOneById(@Param() params: CodeEntryDto) {
+  public async getOneByCode(@Param() params: CodeEntryDto) {
     return this.service.getOneByCode(params.code);
+  }
+
+  @Post()
+  @ApiOperation({ summary: 'Створює новий жанр' })
+  @ApiResponse({ status: 201, description: 'Жанр успішно створено.' })
+  @ApiCookieAuth()
+  public async create(@Body() createGenreDto: CreateGenreDto) {
+    return this.service.create(createGenreDto);
+  }
+
+  @Put('/:code')
+  @ApiOperation({ summary: 'Оновлює жанр по коду' })
+  @ApiResponse({ status: 200, description: 'Жанр успішно оновлено.' })
+  @ApiCookieAuth()
+  public async update(
+    @Param() params: CodeEntryDto,
+    @Body() updateGenreDto: UpdateGenreDto,
+  ) {
+    return this.service.update(params.code, updateGenreDto);
+  }
+
+  @Delete('/:code')
+  @ApiOperation({ summary: 'Видаляє жанр по коду' })
+  @ApiResponse({ status: 200, description: 'Жанр успішно видалено.' })
+  @ApiCookieAuth()
+  public async delete(@Param() params: CodeEntryDto) {
+    return this.service.delete(params.code);
   }
 }

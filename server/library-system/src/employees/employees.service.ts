@@ -10,7 +10,7 @@ export class EmployeesService {
     };
   }
 
-  async getOneById(id: number) {
+  async getOneById(id: string) {
     return {
       message: `Це ендпоінт, що повертає 1 запис працівника з id ${id}`,
     };

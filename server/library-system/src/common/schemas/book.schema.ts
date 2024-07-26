@@ -21,9 +21,6 @@ export class Book extends Document {
 
   @Prop()
   publisher: string;
-
-  @Prop([{ type: MongooseSchema.Types.ObjectId, ref: 'Genre' }])
-  genres: Genre[];
 }
 
 export const BookSchema = SchemaFactory.createForClass(Book);

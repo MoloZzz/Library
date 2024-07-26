@@ -27,7 +27,11 @@ export class Transaction extends Document {
   @Prop({ required: true })
   lastInteractionDate: Date;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Employee', required: true })
+  @Prop({
+    type: MongooseSchema.Types.ObjectId,
+    ref: 'Employee',
+    required: true,
+  })
   librarian: Employee;
 }
 
