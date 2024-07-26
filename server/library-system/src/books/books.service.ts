@@ -12,7 +12,7 @@ export class BooksService {
     return { message: `Це ендпоінт, що повертає 1 книгу з id ${id}` };
   }
 
-  async getOneByName(name: string){
+  async getOneByName(name: string) {
     return { message: `Це ендпоінт, що повертає 1 книгу з назвою ${name}` };
   }
 }

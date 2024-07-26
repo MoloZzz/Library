@@ -15,7 +15,7 @@ export class GenresController {
     return this.service.getAll();
   }
 
-  @Get('/:id')
+  @Get('/:code')
   @ApiOperation({ summary: 'Повертає жанр по коду' })
   @ApiCookieAuth()
   public async getOneById(@Param() params: CodeEntryDto) {

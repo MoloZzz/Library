@@ -7,7 +7,7 @@ import { IdEntryDto } from 'src/common/dto/common/id-entry-dto.dto';
 @Controller('transactions')
 export class TransactionsController {
   constructor(private readonly service: TransactionsService) {}
-  
+
   @Get('/:id')
   @ApiOperation({ summary: 'Повертає книгу по id' })
   @ApiCookieAuth()
