@@ -9,11 +9,15 @@ import { AdminModule } from './admin/admin.module';
 import { EmployeesModule } from './employees/employees.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { AuthenticationModule } from './authentication/authentication.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true, 
+    }),
     MongooseModule.forRoot(
-      'mongodb+srv://megaoleksii5:hZMcn4sgv6aNeQwE@library.r3ucpy7.mongodb.net/',
+      process.env.MONGO_URI,
     ),
     UsersModule,
     GenresModule,
