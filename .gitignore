@@ -1,6 +1,6 @@
 # compiled output
 server/library-system/dist
-server/library-system/node_modules/
+server/library-system/node_modules
 server/library-system/build
 
 # Logs
