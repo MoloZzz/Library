@@ -1,6 +1,7 @@
 import {
   IsDefined,
   IsEmail,
+  IsNotEmpty,
   IsOptional,
   IsString,
 } from '@nestjs/class-validator';
@@ -23,4 +24,9 @@ export class CreateUserDto {
   @IsOptional()
   @IsString()
   address?: string;
+  @ApiProperty()
+  @IsDefined()
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
 }

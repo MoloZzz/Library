@@ -1,32 +1,68 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { ApiOperation, ApiCookieAuth, ApiTags } from '@nestjs/swagger';
-import { IdEntryDto } from 'src/common/dto/common/id-entry-dto.dto';
-import { NameEntryDto } from 'src/common/dto/common/name-entry-dto.dto';
+import { CreateEmployeeDto } from 'src/common/dto/employees/create-employee-dto.dto';
+import { UpdateEmployeeDto } from 'src/common/dto/employees/update-employee-dto.dto';
+import { CreateEmployeeFromUserDto } from 'src/common/dto/employees/create-employee-from-user-dto.dto';
 
 @ApiTags('Робітники')
 @Controller('employees')
 export class EmployeesController {
   constructor(private readonly service: EmployeesService) {}
 
+  @Post('from-user/:userId')
+  @ApiOperation({ summary: 'Create new employee from exists user' })
+  @ApiCookieAuth()
+  createFromUser(
+    @Param('userId') userId: string,
+    @Body() createEmployeeDto: CreateEmployeeFromUserDto,
+  ) {
+    return this.service.createFromUser(userId, createEmployeeDto);
+  }
+
+  @Post()
+  @ApiOperation({ summary: 'Create new employee' })
+  @ApiCookieAuth()
+  create(@Body() createEmployeeDto: CreateEmployeeDto) {
+    return this.service.create(createEmployeeDto);
+  }
+
   @Get()
-  @ApiOperation({ summary: 'Повертає всі записи робітників' })
+  @ApiOperation({ summary: 'Get all employees' })
   @ApiCookieAuth()
-  public async getAll() {
-    return this.service.getAll();
+  findAll() {
+    return this.service.findAll();
   }
 
-  @Get('/:id')
-  @ApiOperation({ summary: 'Повертає робітника по id' })
+  @Get(':id')
+  @ApiOperation({ summary: 'Get one employee by id' })
   @ApiCookieAuth()
-  public async getOneById(@Param() params: IdEntryDto) {
-    return this.service.getOneById(params.id);
+  findOne(@Param('id') id: string) {
+    return this.service.findOne(id);
   }
 
-  @Get('/:name')
-  @ApiOperation({ summary: 'Повертає робітника по ФІО' })
+  @Patch(':id')
+  @ApiOperation({ summary: 'Update one employee by id' })
   @ApiCookieAuth()
-  public async getOneByName(@Param() params: NameEntryDto) {
-    return this.service.getOneByName(params.name);
+  update(
+    @Param('id') id: string,
+    @Body() updateEmployeeDto: UpdateEmployeeDto,
+  ) {
+    return this.service.update(id, updateEmployeeDto);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete one employee by id' })
+  @ApiCookieAuth()
+  remove(@Param('id') id: string) {
+    return this.service.remove(id);
   }
 }

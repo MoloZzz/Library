@@ -13,7 +13,7 @@ export class Employee extends Document {
   @Prop({ required: true })
   employmentDate: Date;
 
-  @Prop({ required: true })
+  @Prop({ required: true, default: "Librarist" })
   role: string;
 
   @Prop({ required: true, unique: true })
