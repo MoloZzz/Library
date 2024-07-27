@@ -16,12 +16,6 @@ export class CreateEmployeeFromUserDto {
 
   @ApiProperty()
   @IsDefined()
-  @IsString()
-  @IsNotEmpty()
-  role: string;
-
-  @ApiProperty()
-  @IsDefined()
   @IsEmail()
   @IsNotEmpty()
   email: string;

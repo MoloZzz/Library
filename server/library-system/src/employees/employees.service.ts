@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateEmployeeDto } from 'src/common/dto/employees/create-employee-dto.dto';
@@ -19,8 +19,6 @@ export class EmployeesService {
 
     const employeeData : Employee = {
       user: user._id,
-      position: createEmployeeDto.position,
-      role: createEmployeeDto.role,
       employmentDate: new Date,
       password: createEmployeeDto.password,
     } as Employee;
@@ -35,15 +33,14 @@ export class EmployeesService {
       fullName: employee.fullName,
       phone: employee.phone,
       address: employee.address,
-      formular: employee.formular,
       email: employee.email,
-      });
+    });
+    if(!user){
+      throw new BadRequestException('Error, during creating user');
+    }
     userId = user._id as string;
     const employeeData = {
       user,
-      position: employee.position,
-      role: employee.role,
-      email: employee.email,
       password: employee.password,
       employmentDate: new Date,
     };

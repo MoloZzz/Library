@@ -17,10 +17,6 @@ export class CreateUserDto {
   @IsString()
   phone: string;
   @ApiProperty()
-  @IsDefined()
-  @IsString()
-  formular: string;
-  @ApiProperty()
   @IsOptional()
   @IsString()
   address?: string;

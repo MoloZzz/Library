@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { CreateUserDto } from 'src/common/dto/users/create-user-dto.dto';
 import { UpdateUserDto } from 'src/common/dto/users/update-user-dto.dto';
 import { Book, User } from 'src/common/schemas';
+import { generateFormular } from 'src/utils/generate-formular';
 
 @Injectable()
 export class UsersService {
@@ -12,6 +13,7 @@ export class UsersService {
   async create(createUserDto: CreateUserDto): Promise<User> {
     const createdUser = new this.userModel({
       ...createUserDto,
+      formular: generateFormular(),
       registrationDate: new Date(),
     });
     return createdUser.save();
