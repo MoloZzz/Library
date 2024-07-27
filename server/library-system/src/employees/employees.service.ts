@@ -19,7 +19,7 @@ export class EmployeesService {
     private readonly userService: UsersService,
   ) {}
 
-  async createFromUser(employee: CreateEmployeeFromUserDto,): Promise<Employee> {
+  async createFromUser(employee: CreateEmployeeFromUserDto): Promise<Employee> {
     const user = await this.userService.findOne(employee.userId);
     if (!user) {
       throw new NotFoundException(`User with id ${employee.userId} not found`);
@@ -61,27 +61,31 @@ export class EmployeesService {
   }
 
   async findAll(): Promise<Employee[]> {
-    return this.employeeModel.find().exec();
+    return this.employeeModel.find().populate('user').exec();
   }
 
   async findOne(id: string): Promise<Employee> {
-    const employee = await this.employeeModel.findById(id).exec();
+    const employee = await this.employeeModel
+      .findById(id)
+      .populate('user')
+      .exec();
     if (!employee) {
       throw new NotFoundException(`Employee with id ${id} not found`);
     }
     return employee;
   }
 
-  async update(id: string, employeeDto: UpdateEmployeeDto): Promise<Employee> {console.log('here1')
+  async update(id: string, employeeDto: UpdateEmployeeDto): Promise<Employee> {
     const employee = await this.employeeModel.findById(id).exec();
     if (!employee) {
       throw new NotFoundException(`Employee with id ${id} not found`);
     }
 
     if (employeeDto.user) {
-      await this.userModel.findByIdAndUpdate(employee.user.id, employeeDto.user).exec();
+      await this.userModel
+        .findByIdAndUpdate(employee.user.id, employeeDto.user)
+        .exec();
     }
-console.log('here')
     const updatedEmployee = await this.employeeModel
       .findByIdAndUpdate(id, employeeDto, { new: true })
       .populate('user')

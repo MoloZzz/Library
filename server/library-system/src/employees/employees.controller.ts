@@ -24,9 +24,7 @@ export class EmployeesController {
   @Post('from-user/:userId')
   @ApiOperation({ summary: 'Create new employee from exists user' })
   @ApiCookieAuth()
-  async createFromUser(
-    @Body() body: CreateEmployeeFromUserDto,
-  ) {
+  async createFromUser(@Body() body: CreateEmployeeFromUserDto) {
     return this.service.createFromUser(body);
   }
 
@@ -54,11 +52,7 @@ export class EmployeesController {
   @Patch(':id')
   @ApiOperation({ summary: 'Update one employee by id' })
   @ApiCookieAuth()
-  async update(
-    @Param() params: IdEntryDto,
-    @Body() body: UpdateEmployeeDto,
-  ) {
-    console.log('here3')
+  async update(@Param() params: IdEntryDto, @Body() body: UpdateEmployeeDto) {
     return this.service.update(params.id, body);
   }
 
