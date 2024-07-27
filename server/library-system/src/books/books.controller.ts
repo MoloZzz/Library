@@ -37,7 +37,6 @@ export class BooksController {
   @ApiOperation({ summary: 'Get a book by name' })
   @ApiCookieAuth()
   async findOneByName(@Param() params: NameEntryDto) {
-    console.log()
     return this.service.getOneByName(params.name);
   }
 

@@ -7,8 +7,10 @@ import { BookGenre, Genre } from 'src/common/schemas';
 
 @Injectable()
 export class GenresService {
-  constructor(@InjectModel(Genre.name) private genreModel: Model<Genre>,
-  @InjectModel(BookGenre.name) private bookGenreModel: Model<BookGenre>,) {}
+  constructor(
+    @InjectModel(Genre.name) private genreModel: Model<Genre>,
+    @InjectModel(BookGenre.name) private bookGenreModel: Model<BookGenre>,
+  ) {}
 
   async getAll() {
     return this.genreModel.find().exec();
@@ -40,7 +42,9 @@ export class GenresService {
   async getGenreCodesByBookId(bookId: string): Promise<string[]> {
     const bookGenres = await this.bookGenreModel.find({ book: bookId }).exec();
     const genreIds = bookGenres.map((bg) => bg.genre);
-    const genres = await this.genreModel.find({ _id: { $in: genreIds } }).exec();
+    const genres = await this.genreModel
+      .find({ _id: { $in: genreIds } })
+      .exec();
     return genres.map((genre) => genre.code);
   }
 }

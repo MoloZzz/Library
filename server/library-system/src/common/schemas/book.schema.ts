@@ -4,7 +4,7 @@ import { Genre } from './genre.schema';
 
 @Schema()
 export class Book extends Document {
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   title: string;
 
   @Prop()
@@ -13,7 +13,7 @@ export class Book extends Document {
   @Prop({ default: true })
   available: boolean;
 
-  @Prop()
+  @Prop({ unique: true })
   isbn: string;
 
   @Prop()

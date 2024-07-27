@@ -95,7 +95,9 @@ export class BooksService {
       );
       await this.bookGenreModel.insertMany(bookGenres);
     }
-    const genres = await this.genresService.getGenreCodesByBookId(updatedBook.id);
+    const genres = await this.genresService.getGenreCodesByBookId(
+      updatedBook.id,
+    );
     return { ...updatedBook.toObject(), genres };
   }
 
