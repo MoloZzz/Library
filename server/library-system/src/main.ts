@@ -8,7 +8,6 @@ async function bootstrap() {
     .setTitle('Library System')
     .setDescription('The library system API documentation')
     .setVersion('1.0')
-    .addTag('library')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
