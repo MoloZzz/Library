@@ -17,17 +17,5 @@ export class CreateEmployeeFromUserDto {
   @IsDefined()
   @IsString()
   @IsNotEmpty()
-  position: string; // Посада
-
-  @ApiProperty()
-  @IsDefined()
-  @IsEmail()
-  @IsNotEmpty()
-  email: string;
-
-  @ApiProperty()
-  @IsDefined()
-  @IsString()
-  @IsNotEmpty()
   password: string;
 }

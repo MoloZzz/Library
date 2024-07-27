@@ -12,6 +12,7 @@ import { ApiOperation, ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 import {
   CreateEmployeeDto,
   CreateEmployeeFromUserDto,
+  IdEntryDto,
   UpdateEmployeeDto,
 } from 'src/common/dto';
 
@@ -23,48 +24,48 @@ export class EmployeesController {
   @Post('from-user/:userId')
   @ApiOperation({ summary: 'Create new employee from exists user' })
   @ApiCookieAuth()
-  createFromUser(
-    @Param('userId') userId: string,
-    @Body() createEmployeeDto: CreateEmployeeFromUserDto,
+  async createFromUser(
+    @Body() body: CreateEmployeeFromUserDto,
   ) {
-    return this.service.createFromUser(userId, createEmployeeDto);
+    return this.service.createFromUser(body);
   }
 
   @Post()
   @ApiOperation({ summary: 'Create new employee' })
   @ApiCookieAuth()
-  create(@Body() createEmployeeDto: CreateEmployeeDto) {
-    return this.service.create(createEmployeeDto);
+  async create(@Body() body: CreateEmployeeDto) {
+    return this.service.create(body);
   }
 
   @Get()
   @ApiOperation({ summary: 'Get all employees' })
   @ApiCookieAuth()
-  findAll() {
+  async findAll() {
     return this.service.findAll();
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get one employee by id' })
   @ApiCookieAuth()
-  findOne(@Param('id') id: string) {
-    return this.service.findOne(id);
+  async findOne(@Param() params: IdEntryDto) {
+    return this.service.findOne(params.id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update one employee by id' })
   @ApiCookieAuth()
-  update(
-    @Param('id') id: string,
-    @Body() updateEmployeeDto: UpdateEmployeeDto,
+  async update(
+    @Param() params: IdEntryDto,
+    @Body() body: UpdateEmployeeDto,
   ) {
-    return this.service.update(id, updateEmployeeDto);
+    console.log('here3')
+    return this.service.update(params.id, body);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete one employee by id' })
   @ApiCookieAuth()
-  remove(@Param('id') id: string) {
-    return this.service.remove(id);
+  async remove(@Param() params: IdEntryDto) {
+    return this.service.remove(params.id);
   }
 }

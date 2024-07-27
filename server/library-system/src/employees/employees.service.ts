@@ -8,29 +8,30 @@ import { Model } from 'mongoose';
 import { CreateEmployeeDto } from 'src/common/dto/employees/create-employee-dto.dto';
 import { CreateEmployeeFromUserDto } from 'src/common/dto/employees/create-employee-from-user-dto.dto';
 import { UpdateEmployeeDto } from 'src/common/dto/employees/update-employee-dto.dto';
-import { Employee } from 'src/common/schemas';
+import { Employee, User } from 'src/common/schemas';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class EmployeesService {
   constructor(
     @InjectModel(Employee.name) private employeeModel: Model<Employee>,
+    @InjectModel(User.name) private userModel: Model<User>,
     private readonly userService: UsersService,
   ) {}
 
-  async createFromUser(
-    userId: string,
-    createEmployeeDto: CreateEmployeeFromUserDto,
-  ): Promise<Employee> {
-    const user = await this.userService.findOne(userId);
+  async createFromUser(employee: CreateEmployeeFromUserDto,): Promise<Employee> {
+    const user = await this.userService.findOne(employee.userId);
     if (!user) {
-      throw new NotFoundException(`User with id ${userId} not found`);
+      throw new NotFoundException(`User with id ${employee.userId} not found`);
     }
 
+    console.log(user);
     const employeeData: Employee = {
       user: user._id,
       employmentDate: new Date(),
-      password: createEmployeeDto.password,
+      position: 'Librarist',
+      role: 'USER',
+      password: employee.password,
     } as Employee;
 
     const createdEmployee = new this.employeeModel(employeeData);
@@ -71,16 +72,25 @@ export class EmployeesService {
     return employee;
   }
 
-  async update(
-    id: string,
-    updateEmployeeDto: UpdateEmployeeDto,
-  ): Promise<Employee> {
+  async update(id: string, employeeDto: UpdateEmployeeDto): Promise<Employee> {console.log('here1')
+    const employee = await this.employeeModel.findById(id).exec();
+    if (!employee) {
+      throw new NotFoundException(`Employee with id ${id} not found`);
+    }
+
+    if (employeeDto.user) {
+      await this.userModel.findByIdAndUpdate(employee.user.id, employeeDto.user).exec();
+    }
+console.log('here')
     const updatedEmployee = await this.employeeModel
-      .findByIdAndUpdate(id, updateEmployeeDto, { new: true })
+      .findByIdAndUpdate(id, employeeDto, { new: true })
+      .populate('user')
       .exec();
+
     if (!updatedEmployee) {
       throw new NotFoundException(`Employee with id ${id} not found`);
     }
+
     return updatedEmployee;
   }
 
