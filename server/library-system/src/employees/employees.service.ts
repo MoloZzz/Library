@@ -1,4 +1,8 @@
-import { BadRequestException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateEmployeeDto } from 'src/common/dto/employees/create-employee-dto.dto';
@@ -9,17 +13,23 @@ import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class EmployeesService {
-  constructor(@InjectModel(Employee.name) private employeeModel: Model<Employee>, private readonly userService: UsersService,) {}
+  constructor(
+    @InjectModel(Employee.name) private employeeModel: Model<Employee>,
+    private readonly userService: UsersService,
+  ) {}
 
-  async createFromUser(userId: string, createEmployeeDto: CreateEmployeeFromUserDto): Promise<Employee> {
+  async createFromUser(
+    userId: string,
+    createEmployeeDto: CreateEmployeeFromUserDto,
+  ): Promise<Employee> {
     const user = await this.userService.findOne(userId);
     if (!user) {
       throw new NotFoundException(`User with id ${userId} not found`);
     }
 
-    const employeeData : Employee = {
+    const employeeData: Employee = {
       user: user._id,
-      employmentDate: new Date,
+      employmentDate: new Date(),
       password: createEmployeeDto.password,
     } as Employee;
 
@@ -35,14 +45,14 @@ export class EmployeesService {
       address: employee.address,
       email: employee.email,
     });
-    if(!user){
+    if (!user) {
       throw new BadRequestException('Error, during creating user');
     }
     userId = user._id as string;
     const employeeData = {
       user,
       password: employee.password,
-      employmentDate: new Date,
+      employmentDate: new Date(),
     };
 
     const createdEmployee = new this.employeeModel(employeeData);
@@ -61,7 +71,10 @@ export class EmployeesService {
     return employee;
   }
 
-  async update(id: string, updateEmployeeDto: UpdateEmployeeDto): Promise<Employee> {
+  async update(
+    id: string,
+    updateEmployeeDto: UpdateEmployeeDto,
+  ): Promise<Employee> {
     const updatedEmployee = await this.employeeModel
       .findByIdAndUpdate(id, updateEmployeeDto, { new: true })
       .exec();

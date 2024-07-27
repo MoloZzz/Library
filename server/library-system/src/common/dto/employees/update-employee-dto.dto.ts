@@ -6,7 +6,7 @@ export class UpdateEmployeeDto {
   @IsString()
   @IsOptional()
   fullName?: string; // ПІБ працівника
-  
+
   @ApiProperty()
   @IsString()
   @IsOptional()
@@ -21,7 +21,7 @@ export class UpdateEmployeeDto {
   @IsString()
   @IsOptional()
   formNumber?: string; // Номер формуляра
-  
+
   @ApiProperty()
   @IsString()
   @IsOptional()

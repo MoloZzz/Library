@@ -9,9 +9,11 @@ import {
 } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { ApiOperation, ApiCookieAuth, ApiTags } from '@nestjs/swagger';
-import { CreateEmployeeDto } from 'src/common/dto/employees/create-employee-dto.dto';
-import { UpdateEmployeeDto } from 'src/common/dto/employees/update-employee-dto.dto';
-import { CreateEmployeeFromUserDto } from 'src/common/dto/employees/create-employee-from-user-dto.dto';
+import {
+  CreateEmployeeDto,
+  CreateEmployeeFromUserDto,
+  UpdateEmployeeDto,
+} from 'src/common/dto';
 
 @ApiTags('Робітники')
 @Controller('employees')

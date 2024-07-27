@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateGenreDto } from 'src/common/dto/genres/create-genre-dto.dto';
-import { UpdateGenreDto } from 'src/common/dto/genres/update-genre-dto.dto';
+import { CreateGenreDto, UpdateGenreDto } from 'src/common/dto';
 import { BookGenre, Genre } from 'src/common/schemas';
 
 @Injectable()

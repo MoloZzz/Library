@@ -1,9 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateBookDto } from 'src/common/dto/books/create-book-dto.dto';
-import { UpdateBookDto } from 'src/common/dto/books/update-book-dto.dto';
-import { Book, BookGenre, Genre } from 'src/common/schemas';
+import { CreateBookDto, UpdateBookDto } from 'src/common/dto';
+import { Book, BookGenre } from 'src/common/schemas';
 import { GenresService } from 'src/genres/genres.service';
 
 @Injectable()

@@ -9,8 +9,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CreateUserDto } from 'src/common/dto/users/create-user-dto.dto';
-import { UpdateUserDto } from 'src/common/dto/users/update-user-dto.dto';
+import { CreateUserDto, UpdateUserDto } from 'src/common/dto';
 
 @ApiTags('Користувачі')
 @Controller('users')

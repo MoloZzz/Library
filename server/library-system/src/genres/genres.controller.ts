@@ -14,9 +14,7 @@ import {
   ApiTags,
   ApiResponse,
 } from '@nestjs/swagger';
-import { CodeEntryDto } from 'src/common/dto/common/code-entry-dto.dto';
-import { CreateGenreDto } from 'src/common/dto/genres/create-genre-dto.dto';
-import { UpdateGenreDto } from 'src/common/dto/genres/update-genre-dto.dto';
+import { CodeEntryDto, CreateGenreDto, UpdateGenreDto } from 'src/common/dto';
 
 @ApiTags('Жанри')
 @Controller('genres')

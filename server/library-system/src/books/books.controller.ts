@@ -9,10 +9,12 @@ import {
 } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { IdEntryDto } from 'src/common/dto/common/id-entry-dto.dto';
-import { NameEntryDto } from 'src/common/dto/common/name-entry-dto.dto';
-import { CreateBookDto } from 'src/common/dto/books/create-book-dto.dto';
-import { UpdateBookDto } from 'src/common/dto/books/update-book-dto.dto';
+import {
+  CreateBookDto,
+  IdEntryDto,
+  NameEntryDto,
+  UpdateBookDto,
+} from 'src/common/dto';
 
 @ApiTags('Книги')
 @Controller('books')
