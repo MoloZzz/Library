@@ -11,7 +11,7 @@ import { UsersService } from './users.service';
 import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto, UpdateUserDto } from 'src/common/dto';
 
-@ApiTags('Користувачі')
+@ApiTags('Users CRUD API')
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UsersService) {}

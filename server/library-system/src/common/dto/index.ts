@@ -10,3 +10,5 @@ export * from './genres/create-genre-dto.dto';
 export * from './genres/update-genre-dto.dto';
 export * from './users/create-user-dto.dto';
 export * from './users/update-user-dto.dto';
+export * from './transactions/create-transaction-dto.dto';
+export * from './transactions/update-transaction-dto.dto';

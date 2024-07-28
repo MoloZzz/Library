@@ -16,7 +16,7 @@ import {
   UpdateBookDto,
 } from 'src/common/dto';
 
-@ApiTags('Книги')
+@ApiTags('Books CRUD API')
 @Controller('books')
 export class BooksController {
   constructor(private readonly service: BooksService) {}

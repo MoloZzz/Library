@@ -16,7 +16,7 @@ import {
   UpdateEmployeeDto,
 } from 'src/common/dto';
 
-@ApiTags('Робітники')
+@ApiTags('Employees CRUD API')
 @Controller('employees')
 export class EmployeesController {
   constructor(private readonly service: EmployeesService) {}
