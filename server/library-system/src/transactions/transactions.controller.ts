@@ -12,6 +12,7 @@ import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { IdEntryDto } from 'src/common/dto/common/id-entry-dto.dto';
 import { CreateTransactionDto } from 'src/common/dto/transactions/create-transaction-dto.dto';
 import { UpdateTransactionDto } from 'src/common/dto/transactions/update-transaction-dto.dto';
+import { CreateTransactionLiteDto } from 'src/common/dto';
 
 @ApiTags('Transactions CRUD API')
 @Controller('transactions')
@@ -37,6 +38,15 @@ export class TransactionsController {
   @ApiCookieAuth()
   public async create(@Body() createTransactionDto: CreateTransactionDto) {
     return this.service.create(createTransactionDto);
+  }
+
+  @Post('/create-lite')
+  @ApiOperation({ summary: 'Create a new transaction lite' })
+  @ApiCookieAuth()
+  public async createLiteTransaction(
+    @Body() createTransactionLiteDto: CreateTransactionLiteDto,
+  ) {
+    return this.service.createLiteTransaction(createTransactionLiteDto);
   }
 
   @Put('/:id')

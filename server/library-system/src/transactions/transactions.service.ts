@@ -5,12 +5,19 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { BooksService } from 'src/books/books.service';
 import { CreateTransactionDto, UpdateTransactionDto } from 'src/common/dto';
+import { CreateTransactionLiteDto } from 'src/common/dto/transactions/create-transaction-lite-dto.dto';
 import { Book, Transaction } from 'src/common/schemas';
+import { EmployeesService } from 'src/employees/employees.service';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class TransactionsService {
   constructor(
+    private userService: UsersService,
+    private bookService: BooksService,
+    private employeeService: EmployeesService,
     @InjectModel(Transaction.name) private transactionModel: Model<Transaction>,
     @InjectModel(Book.name) private bookModel: Model<Book>,
   ) {}
@@ -18,9 +25,8 @@ export class TransactionsService {
   async getOneById(id: string) {
     const transaction = await this.transactionModel
       .findById(id)
-      .populate('user', 'FIO')
-      .populate('book', 'name')
-      .populate('employee', 'FIO')
+      .populate('user', 'fullName')
+      .populate('book', 'title')
       .exec();
 
     if (!transaction) {
@@ -33,9 +39,8 @@ export class TransactionsService {
   async getAll() {
     return this.transactionModel
       .find()
-      .populate('user', 'FIO')
-      .populate('book', 'name')
-      .populate('employee', 'FIO')
+      .populate('user', 'fullName')
+      .populate('book', 'title')
       .exec();
   }
 
@@ -58,6 +63,38 @@ export class TransactionsService {
     book.available = false;
     await book.save();
     return await createdTransaction.save();
+  }
+
+  async createLiteTransaction(
+    createTransactionLiteDto: CreateTransactionLiteDto,
+  ) {
+    const { userFullName, bookName, librarianFullName } =
+      createTransactionLiteDto;
+
+    const user = await this.userService.findByName(userFullName);
+    const book = await this.bookService.findByName(bookName);
+
+    if (!book.available) {
+      throw new BadRequestException(`Book "${bookName}" is not available`);
+    }
+
+    const employee = await this.employeeService.findByName(librarianFullName);
+
+    const newTransaction = new this.transactionModel({
+      user: user._id,
+      book: book._id,
+      librarian: employee._id,
+      borrowDate: new Date(),
+      status: 'taken',
+      lastInteractionDate: new Date(),
+    });
+
+    const savedTransaction = await newTransaction.save();
+
+    book.available = false;
+    await book.save();
+
+    return savedTransaction.populate(['book', 'user', 'librarian']);
   }
 
   async update(id: string, updateTransactionDto: UpdateTransactionDto) {

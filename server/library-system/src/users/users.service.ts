@@ -46,4 +46,12 @@ export class UsersService {
       throw new NotFoundException(`User with id ${id} not found`);
     }
   }
+
+  async findByName(fullName: string): Promise<User> {
+    const user = await this.userModel.findOne({ fullName }).exec();
+    if (!user) {
+      throw new NotFoundException(`User with name ${fullName} not found`);
+    }
+    return user;
+  }
 }

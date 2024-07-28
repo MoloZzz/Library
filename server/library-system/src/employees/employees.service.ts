@@ -104,4 +104,22 @@ export class EmployeesService {
       throw new NotFoundException(`Employee with id ${id} not found`);
     }
   }
+
+  async findByName(fullName: string): Promise<Employee> {
+    const employee = await this.employeeModel
+      .findOne()
+      .populate({
+        path: 'user',
+        match: { fullName: fullName },
+      })
+      .exec();
+
+    if (!employee || !employee.user) {
+      throw new NotFoundException(
+        `Employee with user name ${fullName} not found`,
+      );
+    }
+
+    return employee;
+  }
 }

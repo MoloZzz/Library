@@ -22,5 +22,6 @@ import { GenresService } from 'src/genres/genres.service';
   ],
   providers: [BooksService, GenresService],
   controllers: [BooksController],
+  exports: [BooksService],
 })
 export class BooksModule {}
