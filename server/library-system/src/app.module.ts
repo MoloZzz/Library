@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -10,6 +10,8 @@ import { EmployeesModule } from './employees/employees.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { ConfigModule } from '@nestjs/config';
+import { LoggerModule } from './utils/logger/logger.module';
+import { LoggerMiddleware } from './utils/logger/logger-middleware';
 
 @Module({
   imports: [
@@ -24,8 +26,13 @@ import { ConfigModule } from '@nestjs/config';
     EmployeesModule,
     TransactionsModule,
     AuthenticationModule,
+    LoggerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+}
+}
