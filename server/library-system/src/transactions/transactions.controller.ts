@@ -13,6 +13,8 @@ import { IdEntryDto } from 'src/common/dto/common/id-entry-dto.dto';
 import { CreateTransactionDto } from 'src/common/dto/transactions/create-transaction-dto.dto';
 import { UpdateTransactionDto } from 'src/common/dto/transactions/update-transaction-dto.dto';
 import { CreateTransactionLiteDto } from 'src/common/dto';
+import { UpdateTransactionStatusDto } from 'src/common/dto/transactions/update-transaction-status-dto.dto';
+import { transactionStatus } from 'src/common/enums';
 
 @ApiTags('Transactions CRUD API')
 @Controller('transactions')
@@ -64,5 +66,18 @@ export class TransactionsController {
   @ApiCookieAuth()
   public async delete(@Param() params: IdEntryDto) {
     return this.service.delete(params.id);
+  }
+
+  @Put('/update-status/:id')
+  @ApiOperation({ summary: 'Update transaction status by id' })
+  @ApiCookieAuth()
+  public async updateStatus(
+    @Param() params: IdEntryDto,
+    @Body() body: UpdateTransactionStatusDto,
+  ) {
+    return this.service.updateStatus(
+      params.id,
+      body.status as transactionStatus,
+    );
   }
 }

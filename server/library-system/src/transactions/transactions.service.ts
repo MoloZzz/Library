@@ -8,6 +8,7 @@ import { Model } from 'mongoose';
 import { BooksService } from 'src/books/books.service';
 import { CreateTransactionDto, UpdateTransactionDto } from 'src/common/dto';
 import { CreateTransactionLiteDto } from 'src/common/dto/transactions/create-transaction-lite-dto.dto';
+import { transactionStatus } from 'src/common/enums';
 import { Book, Transaction } from 'src/common/schemas';
 import { EmployeesService } from 'src/employees/employees.service';
 import { UsersService } from 'src/users/users.service';
@@ -111,11 +112,33 @@ export class TransactionsService {
 
   async delete(id: string) {
     const result = await this.transactionModel.findByIdAndDelete(id).exec();
-
     if (!result) {
       throw new NotFoundException(`Transaction with id ${id} not found`);
     }
-
     return result;
+  }
+
+  async updateStatus(id: string, status: transactionStatus) {
+    const transaction = await this.transactionModel
+      .findByIdAndUpdate(id, {
+        status: status,
+      })
+      .exec();
+
+    if (!transaction) {
+      throw new NotFoundException(`Transaction with ID ${id} not found`);
+    }
+    const bookId = transaction.book.toString();
+    if (
+      status === transactionStatus.returned ||
+      status === transactionStatus.returnedNewOne ||
+      status === transactionStatus.writtenOff
+    ) {
+      await this.bookService.update(bookId, { available: true });
+    } else {
+      await this.bookService.update(bookId, { available: false });
+    }
+
+    return transaction;
   }
 }
