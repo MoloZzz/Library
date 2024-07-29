@@ -25,7 +25,6 @@ export class EmployeesService {
       throw new NotFoundException(`User with id ${employee.userId} not found`);
     }
 
-    console.log(user);
     const employeeData: Employee = {
       user: user._id,
       employmentDate: new Date(),
@@ -106,20 +105,39 @@ export class EmployeesService {
   }
 
   async findByName(fullName: string): Promise<Employee> {
-    const employee = await this.employeeModel
-      .findOne()
-      .populate({
-        path: 'user',
-        match: { fullName: fullName },
-      })
-      .exec();
-
-    if (!employee || !employee.user) {
+    const employee = await this.employeeModel.aggregate([
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'user',
+          foreignField: '_id',
+          as: 'user',
+        },
+      },
+      {
+        $unwind: '$user',
+      },
+      {
+        $match: {
+          'user.fullName': fullName,
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          user: 1,
+          position: 1,
+          employmentDate: 1,
+          role: 1,
+          password: 1,
+        },
+      },
+    ]);
+    if (!employee || employee.length === 0) {
       throw new NotFoundException(
         `Employee with user name ${fullName} not found`,
       );
     }
-
-    return employee;
+    return employee[0] as Employee;
   }
 }
