@@ -26,7 +26,7 @@ export class EmployeesService {
       throw new NotFoundException(`User with id ${employee.userId} not found`);
     }
 
-    const hashedPassword : string = await bcrypt.hash(employee.password, 10);
+    const hashedPassword: string = await bcrypt.hash(employee.password, 10);
     const employeeData: Employee = {
       user: user._id,
       employmentDate: new Date(),
@@ -50,7 +50,7 @@ export class EmployeesService {
       throw new BadRequestException('Error, during creating user');
     }
     userId = user._id as string;
-    const hashedPassword : string = await bcrypt.hash(employee.password, 10);
+    const hashedPassword: string = await bcrypt.hash(employee.password, 10);
     const employeeData = {
       user,
       email: employee.email,

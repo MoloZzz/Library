@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { EmployeesService } from 'src/employees/employees.service';
+import * as jwt from 'jsonwebtoken';
+import { config } from 'process';
 
 @Injectable()
 export class AuthenticationService {
@@ -24,5 +26,15 @@ export class AuthenticationService {
     return {
       access_token: this.jwtService.sign(payload),
     };
+  }
+
+  verifyToken(token: string) {
+    try {
+      const secret = process.env.JWT_SECRET;
+      const decoded = jwt.verify(token, secret);
+      return decoded;
+    } catch (err) {
+      throw new Error('Invalid token');
+    }
   }
 }
