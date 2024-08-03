@@ -1,1 +1,1 @@
-export * from './generate-formular';
+export * from './common/generate-formular';

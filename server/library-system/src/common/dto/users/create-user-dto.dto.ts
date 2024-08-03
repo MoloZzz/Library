@@ -20,9 +20,4 @@ export class CreateUserDto {
   @IsOptional()
   @IsString()
   address?: string;
-  @ApiProperty()
-  @IsDefined()
-  @IsEmail()
-  @IsNotEmpty()
-  email: string;
 }

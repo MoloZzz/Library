@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -15,6 +16,7 @@ import {
   NameEntryDto,
   UpdateBookDto,
 } from 'src/common/dto';
+import { LoggedGuard } from 'src/utils/guards/logged.guard';
 
 @ApiTags('Books CRUD API')
 @Controller('books')
@@ -57,6 +59,7 @@ export class BooksController {
   }
 
   @Delete(':id')
+  @UseGuards(LoggedGuard)
   @ApiOperation({ summary: 'Delete a book by id' })
   @ApiCookieAuth()
   async delete(@Param() params: IdEntryDto) {

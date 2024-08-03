@@ -10,6 +10,7 @@ import { CreateEmployeeFromUserDto } from 'src/common/dto/employees/create-emplo
 import { UpdateEmployeeDto } from 'src/common/dto/employees/update-employee-dto.dto';
 import { Employee, User } from 'src/common/schemas';
 import { UsersService } from 'src/users/users.service';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class EmployeesService {
@@ -25,13 +26,13 @@ export class EmployeesService {
       throw new NotFoundException(`User with id ${employee.userId} not found`);
     }
 
-    console.log(user);
+    const hashedPassword: string = await bcrypt.hash(employee.password, 10);
     const employeeData: Employee = {
       user: user._id,
       employmentDate: new Date(),
       position: 'Librarist',
       role: 'USER',
-      password: employee.password,
+      password: hashedPassword,
     } as Employee;
 
     const createdEmployee = new this.employeeModel(employeeData);
@@ -44,15 +45,16 @@ export class EmployeesService {
       fullName: employee.fullName,
       phone: employee.phone,
       address: employee.address,
-      email: employee.email,
     });
     if (!user) {
       throw new BadRequestException('Error, during creating user');
     }
     userId = user._id as string;
+    const hashedPassword: string = await bcrypt.hash(employee.password, 10);
     const employeeData = {
       user,
-      password: employee.password,
+      email: employee.email,
+      password: hashedPassword,
       employmentDate: new Date(),
     };
 
@@ -106,20 +108,43 @@ export class EmployeesService {
   }
 
   async findByName(fullName: string): Promise<Employee> {
-    const employee = await this.employeeModel
-      .findOne()
-      .populate({
-        path: 'user',
-        match: { fullName: fullName },
-      })
-      .exec();
-
-    if (!employee || !employee.user) {
+    const employee = await this.employeeModel.aggregate([
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'user',
+          foreignField: '_id',
+          as: 'user',
+        },
+      },
+      {
+        $unwind: '$user',
+      },
+      {
+        $match: {
+          'user.fullName': fullName,
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          user: 1,
+          position: 1,
+          employmentDate: 1,
+          role: 1,
+          password: 1,
+        },
+      },
+    ]);
+    if (!employee || employee.length === 0) {
       throw new NotFoundException(
         `Employee with user name ${fullName} not found`,
       );
     }
+    return employee[0] as Employee;
+  }
 
-    return employee;
+  async findOneByEmail(email: string): Promise<Employee> {
+    return await this.employeeModel.findOne({ email: email }).exec();
   }
 }
