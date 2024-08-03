@@ -18,6 +18,9 @@ export class Employee extends Document {
 
   @Prop({ required: true, unique: true })
   password: string;
+
+  @Prop({ unique: true })
+  email: string;
 }
 
 export const EmployeeSchema = SchemaFactory.createForClass(Employee);

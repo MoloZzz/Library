@@ -22,24 +22,6 @@ export class CreateEmployeeDto {
   address: string;
 
   @ApiProperty()
-  @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  formular?: string; // Номер формуляра
-
-  @ApiProperty()
-  @IsDefined()
-  @IsString()
-  @IsNotEmpty()
-  position: string; // Посада
-
-  @ApiProperty()
-  @IsDefined()
-  @IsString()
-  @IsNotEmpty()
-  role: string;
-
-  @ApiProperty()
   @IsDefined()
   @IsEmail()
   @IsNotEmpty()

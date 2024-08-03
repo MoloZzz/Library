@@ -100,7 +100,11 @@ export class TransactionsService {
 
   async update(id: string, updateTransactionDto: UpdateTransactionDto) {
     const updatedTransaction = await this.transactionModel
-      .findByIdAndUpdate(id, {...updateTransactionDto, lastInteractionDate: new Date}, { new: true })
+      .findByIdAndUpdate(
+        id,
+        { ...updateTransactionDto, lastInteractionDate: new Date() },
+        { new: true },
+      )
       .exec();
 
     if (!updatedTransaction) {
@@ -121,7 +125,8 @@ export class TransactionsService {
   async updateStatus(id: string, status: transactionStatus) {
     const transaction = await this.transactionModel
       .findByIdAndUpdate(id, {
-        status: status, lastInteractionDate: new Date
+        status: status,
+        lastInteractionDate: new Date(),
       })
       .exec();
 

@@ -17,9 +17,6 @@ export class User extends Document {
 
   @Prop({ required: true })
   registrationDate: Date;
-
-  @Prop({ unique: true })
-  email: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

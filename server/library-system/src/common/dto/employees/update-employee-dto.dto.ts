@@ -4,6 +4,7 @@ import {
   IsObject,
   IsNotEmpty,
   IsDate,
+  IsEmail,
 } from '@nestjs/class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { UpdateUserDto } from '../users/update-user-dto.dto';
@@ -52,4 +53,10 @@ export class UpdateEmployeeDto {
   @IsString()
   @IsNotEmpty()
   password?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
 }
