@@ -63,13 +63,6 @@ export class TransactionsController {
     return this.service.update(params.id, updateTransactionDto);
   }
 
-  @Delete('/:id')
-  @ApiOperation({ summary: 'Delete a transaction' })
-  @ApiCookieAuth()
-  public async delete(@Param() params: IdEntryDto) {
-    return this.service.delete(params.id);
-  }
-
   @Put('/update-status/:id')
   @ApiOperation({ summary: 'Update transaction status by id' })
   @ApiCookieAuth()
@@ -81,5 +74,12 @@ export class TransactionsController {
       params.id,
       body.status as transactionStatus,
     );
+  }
+
+  @Delete('/:id')
+  @ApiOperation({ summary: 'Delete a transaction' })
+  @ApiCookieAuth()
+  public async delete(@Param() params: IdEntryDto) {
+    return this.service.delete(params.id);
   }
 }

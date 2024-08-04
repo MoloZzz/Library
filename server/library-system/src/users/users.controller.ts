@@ -16,13 +16,6 @@ import { CreateUserDto, UpdateUserDto } from 'src/common/dto';
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
-  @Post()
-  @ApiOperation({ summary: 'Create new user' })
-  @ApiCookieAuth()
-  create(@Body() body: CreateUserDto) {
-    return this.userService.create(body);
-  }
-
   @Get()
   @ApiOperation({ summary: 'Get all users' })
   @ApiCookieAuth()
@@ -35,6 +28,13 @@ export class UsersController {
   @ApiCookieAuth()
   findOne(@Param('id') id: string) {
     return this.userService.findOne(id);
+  }
+
+  @Post()
+  @ApiOperation({ summary: 'Create new user' })
+  @ApiCookieAuth()
+  create(@Body() body: CreateUserDto) {
+    return this.userService.create(body);
   }
 
   @Patch(':id')

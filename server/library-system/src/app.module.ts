@@ -1,6 +1,5 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
 import { GenresModule } from './genres/genres.module';
@@ -29,7 +28,7 @@ import { LoggerMiddleware } from './utils/logger/logger-middleware';
     LoggerModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

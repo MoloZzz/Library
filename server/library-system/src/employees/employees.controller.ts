@@ -21,20 +21,6 @@ import {
 export class EmployeesController {
   constructor(private readonly service: EmployeesService) {}
 
-  @Post('from-user/:userId')
-  @ApiOperation({ summary: 'Create new employee from exists user' })
-  @ApiCookieAuth()
-  async createFromUser(@Body() body: CreateEmployeeFromUserDto) {
-    return this.service.createFromUser(body);
-  }
-
-  @Post()
-  @ApiOperation({ summary: 'Create new employee' })
-  @ApiCookieAuth()
-  async create(@Body() body: CreateEmployeeDto) {
-    return this.service.create(body);
-  }
-
   @Get()
   @ApiOperation({ summary: 'Get all employees' })
   @ApiCookieAuth()
@@ -47,6 +33,20 @@ export class EmployeesController {
   @ApiCookieAuth()
   async findOne(@Param() params: IdEntryDto) {
     return this.service.findOne(params.id);
+  }
+
+  @Post('from-user/:userId')
+  @ApiOperation({ summary: 'Create new employee from exists user' })
+  @ApiCookieAuth()
+  async createFromUser(@Body() body: CreateEmployeeFromUserDto) {
+    return this.service.createFromUser(body);
+  }
+
+  @Post()
+  @ApiOperation({ summary: 'Create new employee' })
+  @ApiCookieAuth()
+  async create(@Body() body: CreateEmployeeDto) {
+    return this.service.create(body);
   }
 
   @Patch(':id')

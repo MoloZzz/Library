@@ -1,12 +1,21 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiCookieAuth } from '@nestjs/swagger';
+import { LoggedGuard } from './utils/guards/logged.guard';
 
+@ApiTags('Library check API')
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+    @Get('ping')
+    @ApiOperation({ summary: 'Check the availability of the service' })
+    getHello(): string {
+        return 'pong';
+    }
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
-  }
+    @Get('protected')
+    @UseGuards(LoggedGuard)
+    @ApiOperation({ summary: 'Guarded endpoint test' })
+    @ApiCookieAuth()
+    guardedRoute() {
+        return 'Guarded route';
+    }
 }
