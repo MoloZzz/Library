@@ -5,15 +5,15 @@ export class checkReferencesDto {
   @ApiProperty({ description: 'ID книги' })
   @IsString()
   @IsNotEmpty()
-  bookId: string;
+  bookId?: string;
 
   @ApiProperty({ description: 'ID користувача' })
   @IsString()
   @IsNotEmpty()
-  userId: string;
+  userId?: string;
 
   @ApiProperty({ description: 'ID працівника' })
   @IsString()
   @IsNotEmpty()
-  librarianId: string;
+  librarianId?: string;
 }

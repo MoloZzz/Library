@@ -5,7 +5,12 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateBookDto, UpdateBookDto } from 'src/common/dto';
+import { Transaction } from 'sequelize';
+import {
+  checkReferencesDto,
+  CreateBookDto,
+  UpdateBookDto,
+} from 'src/common/dto';
 import { Book, BookGenre } from 'src/common/schemas';
 import { GenresService } from 'src/genres/genres.service';
 
@@ -14,7 +19,8 @@ export class BooksService {
   constructor(
     @InjectModel(Book.name) private bookModel: Model<Book>,
     @InjectModel(BookGenre.name) private bookGenreModel: Model<BookGenre>,
-    private genresService: GenresService,
+    @InjectModel(Transaction.name) private transactionModel: Model<Transaction>,
+    private readonly genresService: GenresService,
   ) {}
 
   async getAll() {
@@ -105,7 +111,13 @@ export class BooksService {
   }
 
   async delete(id: string) {
-    return this.bookModel.findByIdAndDelete(id).exec();
+    if (!this.checkInTransactionReferences({ bookId: id })) {
+      return this.bookModel.findByIdAndDelete(id).exec();
+    } else {
+      throw new BadRequestException(
+        'This book is a dependency in another entry. Call the `/transaction/by-book-id` endpoint for more information',
+      );
+    }
   }
 
   async findByName(title: string): Promise<Book> {
@@ -126,5 +138,20 @@ export class BooksService {
     if (!book.available) throw new BadRequestException('Book is unavailable');
     book.available = false;
     return book.save();
+  }
+
+  private async checkInTransactionReferences(
+    ids: checkReferencesDto,
+  ): Promise<boolean> {
+    const query: any = {};
+    if (ids.bookId) {
+      query.book = ids.bookId;
+    } else if (ids.userId) {
+      query.user = ids.userId;
+    } else if (ids.librarianId) {
+      query.librarian = ids.librarianId;
+    }
+    const transaction = await this.transactionModel.findOne(query).exec();
+    return transaction ? true : false;
   }
 }

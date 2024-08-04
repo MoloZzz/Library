@@ -8,9 +8,12 @@ import {
   BookSchema,
   Genre,
   GenreSchema,
+  Transaction,
+  TransactionSchema,
 } from 'src/common/schemas';
 import { MongooseModule } from '@nestjs/mongoose';
 import { GenresService } from 'src/genres/genres.service';
+import { TransactionsService } from 'src/transactions/transactions.service';
 
 @Module({
   imports: [
@@ -18,6 +21,7 @@ import { GenresService } from 'src/genres/genres.service';
       { name: Book.name, schema: BookSchema },
       { name: BookGenre.name, schema: BookGenreSchema },
       { name: Genre.name, schema: GenreSchema },
+      { name: Transaction.name, schema: TransactionSchema },
     ]),
   ],
   providers: [BooksService, GenresService],
