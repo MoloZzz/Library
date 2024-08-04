@@ -48,6 +48,6 @@ export class UsersController {
   @ApiOperation({ summary: 'Delete one user by id' })
   @ApiCookieAuth()
   remove(@Param('id') id: string) {
-    return this.userService.remove(id);
+    return this.userService.delete(id);
   }
 }

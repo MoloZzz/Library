@@ -115,7 +115,9 @@ export class TransactionsService {
   }
 
   async delete(id: string) {
-    const result = await this.transactionModel.findByIdAndDelete(id).exec();
+    const result = await this.transactionModel
+      .findByIdAndDelete(id, { isActive: false })
+      .exec();
     if (!result) {
       throw new NotFoundException(`Transaction with id ${id} not found`);
     }

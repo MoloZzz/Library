@@ -11,6 +11,7 @@ import { UpdateEmployeeDto } from 'src/common/dto/employees/update-employee-dto.
 import { Employee, User } from 'src/common/schemas';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcryptjs';
+import { UpdateUserDto } from 'src/common/dto';
 
 @Injectable()
 export class EmployeesService {
@@ -82,26 +83,33 @@ export class EmployeesService {
     if (!employee) {
       throw new NotFoundException(`Employee with id ${id} not found`);
     }
-
     if (employeeDto.user) {
-      await this.userModel
-        .findByIdAndUpdate(employee.user.id, employeeDto.user)
-        .exec();
+      const updateUser = await this.userService.update(
+        employee.user._id as string,
+        employeeDto.user as UpdateUserDto,
+      );
+      if (!updateUser) {
+        throw new Error('User updating failed');
+      }
+      employeeDto.user = updateUser;
+    }
+    if (employeeDto.password) {
+      employeeDto.password = await bcrypt.hash(employeeDto.password, 10);
     }
     const updatedEmployee = await this.employeeModel
       .findByIdAndUpdate(id, employeeDto, { new: true })
       .populate('user')
       .exec();
-
     if (!updatedEmployee) {
       throw new NotFoundException(`Employee with id ${id} not found`);
     }
-
     return updatedEmployee;
   }
 
-  async remove(id: string): Promise<void> {
-    const result = await this.employeeModel.findByIdAndDelete(id).exec();
+  async delete(id: string): Promise<void> {
+    const result = await this.employeeModel
+      .findByIdAndDelete(id, { isActive: false })
+      .exec();
     if (!result) {
       throw new NotFoundException(`Employee with id ${id} not found`);
     }

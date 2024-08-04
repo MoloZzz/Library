@@ -60,6 +60,6 @@ export class EmployeesController {
   @ApiOperation({ summary: 'Delete one employee by id' })
   @ApiCookieAuth()
   async remove(@Param() params: IdEntryDto) {
-    return this.service.remove(params.id);
+    return this.service.delete(params.id);
   }
 }

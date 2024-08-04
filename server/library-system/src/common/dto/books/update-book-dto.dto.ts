@@ -38,6 +38,7 @@ export class UpdateBookDto {
   publisher?: string;
 
   @ApiProperty({ example: ['Classic', 'Literature'] })
+  @IsOptional()
   @IsArray()
   @IsString({ each: true })
   genres?: string[];
