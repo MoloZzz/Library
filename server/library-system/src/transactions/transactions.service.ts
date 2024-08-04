@@ -1,15 +1,15 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { BooksService } from 'src/books/books.service';
-import { CreateTransactionDto, UpdateTransactionDto } from 'src/common/dto';
-import { CreateTransactionLiteDto } from 'src/common/dto/transactions/create-transaction-lite-dto.dto';
+import {
+  checkReferencesDto,
+  CreateTransactionDto,
+  CreateTransactionLiteDto,
+  UpdateTransactionDto,
+} from 'src/common/dto';
 import { transactionStatus } from 'src/common/enums';
-import { Book, Transaction } from 'src/common/schemas';
+import { Book, Employee, Transaction, User } from 'src/common/schemas';
 import { EmployeesService } from 'src/employees/employees.service';
 import { UsersService } from 'src/users/users.service';
 
@@ -20,7 +20,6 @@ export class TransactionsService {
     private bookService: BooksService,
     private employeeService: EmployeesService,
     @InjectModel(Transaction.name) private transactionModel: Model<Transaction>,
-    @InjectModel(Book.name) private bookModel: Model<Book>,
   ) {}
 
   async getOneById(id: string) {
@@ -29,11 +28,9 @@ export class TransactionsService {
       .populate('user', 'fullName')
       .populate('book', 'title')
       .exec();
-
     if (!transaction) {
       throw new NotFoundException(`Transaction with id ${id} not found`);
     }
-
     return transaction;
   }
 
@@ -45,13 +42,12 @@ export class TransactionsService {
       .exec();
   }
 
-  async create(createTransactionDto: CreateTransactionDto) {
-    const { userId, bookId, librarianId, comment } = createTransactionDto;
-
-    const book = await this.bookModel.findById(bookId).exec();
-    if (!book) throw new NotFoundException(`Book with ID ${bookId} not found`);
-    if (!book.available) throw new BadRequestException('Book is unavailable');
-
+  private async create(
+    userId: string,
+    bookId: string,
+    librarianId: string,
+    comment: string,
+  ) {
     const createdTransaction = new this.transactionModel({
       user: userId,
       book: bookId,
@@ -61,41 +57,35 @@ export class TransactionsService {
       borrowDate: new Date(),
       lastInteractionDate: new Date(),
     });
-    book.available = false;
-    await book.save();
     return await createdTransaction.save();
   }
 
-  async createLiteTransaction(
-    createTransactionLiteDto: CreateTransactionLiteDto,
-  ) {
-    const { userFullName, bookName, librarianFullName } =
-      createTransactionLiteDto;
+  async createByIds(transaction: CreateTransactionDto) {
+    const { userId, bookId, librarianId, comment } = transaction;
+    const book = await this.bookService.findById(bookId);
+    await this.bookService.markBookAsUnavailable(book);
+    return (await this.create(userId, bookId, librarianId, comment)).populate([
+      'book',
+      'user',
+      'librarian',
+    ]);
+  }
 
-    const user = await this.userService.findByName(userFullName);
-    const book = await this.bookService.findByName(bookName);
-
-    if (!book.available) {
-      throw new BadRequestException(`Book "${bookName}" is not available`);
-    }
-
-    const employee = await this.employeeService.findByName(librarianFullName);
-
-    const newTransaction = new this.transactionModel({
-      user: user._id,
-      book: book._id,
-      librarian: employee._id,
-      borrowDate: new Date(),
-      status: 'taken',
-      lastInteractionDate: new Date(),
-    });
-
-    const savedTransaction = await newTransaction.save();
-
-    book.available = false;
-    await book.save();
-
-    return savedTransaction.populate(['book', 'user', 'librarian']);
+  async createByNames(transaction: CreateTransactionLiteDto) {
+    const { userFullName, bookName, librarianFullName, comment } = transaction;
+    const user: User = await this.userService.findByName(userFullName);
+    const book: Book = await this.bookService.findByName(bookName);
+    await this.bookService.markBookAsUnavailable(book);
+    const librarian: Employee =
+      await this.employeeService.findByName(librarianFullName);
+    return (
+      await this.create(
+        user._id as string,
+        book._id as string,
+        librarian._id as string,
+        comment,
+      )
+    ).populate(['book', 'user', 'librarian']);
   }
 
   async update(id: string, updateTransactionDto: UpdateTransactionDto) {
@@ -106,18 +96,14 @@ export class TransactionsService {
         { new: true },
       )
       .exec();
-
     if (!updatedTransaction) {
       throw new NotFoundException(`Transaction with id ${id} not found`);
     }
-
     return updatedTransaction;
   }
 
   async delete(id: string) {
-    const result = await this.transactionModel
-      .findByIdAndDelete(id, { isActive: false })
-      .exec();
+    const result = await this.transactionModel.findByIdAndDelete(id).exec();
     if (!result) {
       throw new NotFoundException(`Transaction with id ${id} not found`);
     }
@@ -131,7 +117,6 @@ export class TransactionsService {
         lastInteractionDate: new Date(),
       })
       .exec();
-
     if (!transaction) {
       throw new NotFoundException(`Transaction with ID ${id} not found`);
     }
@@ -145,7 +130,42 @@ export class TransactionsService {
     } else {
       await this.bookService.update(bookId, { available: false });
     }
-
     return transaction;
+  }
+
+  async checkReferences(ids: checkReferencesDto): Promise<boolean> {
+    const query: any = {};
+    if (ids.bookId) {
+      query.book = ids.bookId;
+    } else if (ids.userId) {
+      query.user = ids.userId;
+    } else if (ids.librarianId) {
+      query.librarian = ids.librarianId;
+    }
+    const transaction = await this.transactionModel.findOne(query).exec();
+    return transaction ? true : false;
+  }
+  //returns transaction by(or) userId, bookId, librarianId
+  async findReferences(
+    ids: checkReferencesDto,
+  ): Promise<Transaction | undefined> {
+    const query: any = {};
+    if (ids.bookId) {
+      query.book = ids.bookId;
+    }
+    if (ids.userId) {
+      query.user = ids.userId;
+    }
+    if (ids.librarianId) {
+      query.librarian = ids.librarianId;
+    }
+    if (Object.keys(query).length === 0) {
+      return undefined;
+    }
+    const transactions = await this.transactionModel.find(query).exec();
+    if (transactions.length > 0) {
+      return transactions[0];
+    }
+    return undefined;
   }
 }

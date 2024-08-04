@@ -9,11 +9,13 @@ import {
 } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { IdEntryDto } from 'src/common/dto/common/id-entry-dto.dto';
-import { CreateTransactionDto } from 'src/common/dto/transactions/create-transaction-dto.dto';
-import { UpdateTransactionDto } from 'src/common/dto/transactions/update-transaction-dto.dto';
-import { CreateTransactionLiteDto } from 'src/common/dto';
-import { UpdateTransactionStatusDto } from 'src/common/dto/transactions/update-transaction-status-dto.dto';
+import {
+  CreateTransactionDto,
+  CreateTransactionLiteDto,
+  IdEntryDto,
+  UpdateTransactionDto,
+  UpdateTransactionStatusDto,
+} from 'src/common/dto';
 import { transactionStatus } from 'src/common/enums';
 
 @ApiTags('Transactions CRUD API')
@@ -39,7 +41,7 @@ export class TransactionsController {
   @ApiOperation({ summary: 'Create a new transaction' })
   @ApiCookieAuth()
   public async create(@Body() createTransactionDto: CreateTransactionDto) {
-    return this.service.create(createTransactionDto);
+    return this.service.createByIds(createTransactionDto);
   }
 
   @Post('/create-lite')
@@ -48,7 +50,7 @@ export class TransactionsController {
   public async createLiteTransaction(
     @Body() createTransactionLiteDto: CreateTransactionLiteDto,
   ) {
-    return this.service.createLiteTransaction(createTransactionLiteDto);
+    return this.service.createByNames(createTransactionLiteDto);
   }
 
   @Put('/:id')

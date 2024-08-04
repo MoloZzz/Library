@@ -31,9 +31,7 @@ export class GenresService {
   }
 
   async delete(code: string) {
-    return this.genreModel
-      .findOneAndDelete({ code }, { isActive: false })
-      .exec();
+    return this.genreModel.findOneAndDelete({ code }).exec();
   }
 
   async getGenresByIds(ids: string[]): Promise<Genre[]> {

@@ -105,7 +105,7 @@ export class BooksService {
   }
 
   async delete(id: string) {
-    return this.bookModel.findByIdAndDelete(id, { isActive: false }).exec();
+    return this.bookModel.findByIdAndDelete(id).exec();
   }
 
   async findByName(title: string): Promise<Book> {
@@ -114,5 +114,17 @@ export class BooksService {
       throw new NotFoundException(`Book with title ${title} not found`);
     }
     return book;
+  }
+
+  async findById(bookId: string): Promise<Book> {
+    const book = await this.bookModel.findById(bookId).exec();
+    if (!book) throw new NotFoundException(`Book with ID ${bookId} not found`);
+    return book;
+  }
+
+  async markBookAsUnavailable(book: Book): Promise<Book> {
+    if (!book.available) throw new BadRequestException('Book is unavailable');
+    book.available = false;
+    return book.save();
   }
 }

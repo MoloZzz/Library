@@ -13,3 +13,6 @@ export * from './users/update-user-dto.dto';
 export * from './transactions/create-transaction-dto.dto';
 export * from './transactions/update-transaction-dto.dto';
 export * from './transactions/create-transaction-lite-dto.dto';
+export * from './users/login.dto';
+export * from './transactions/check-references-dto.dto';
+export * from './transactions/update-transaction-status-dto.dto';

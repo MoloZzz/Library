@@ -5,13 +5,15 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateEmployeeDto } from 'src/common/dto/employees/create-employee-dto.dto';
-import { CreateEmployeeFromUserDto } from 'src/common/dto/employees/create-employee-from-user-dto.dto';
-import { UpdateEmployeeDto } from 'src/common/dto/employees/update-employee-dto.dto';
 import { Employee, User } from 'src/common/schemas';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcryptjs';
-import { UpdateUserDto } from 'src/common/dto';
+import {
+  CreateEmployeeDto,
+  CreateEmployeeFromUserDto,
+  UpdateEmployeeDto,
+  UpdateUserDto,
+} from 'src/common/dto';
 
 @Injectable()
 export class EmployeesService {
@@ -107,9 +109,7 @@ export class EmployeesService {
   }
 
   async delete(id: string): Promise<void> {
-    const result = await this.employeeModel
-      .findByIdAndDelete(id, { isActive: false })
-      .exec();
+    const result = await this.employeeModel.findByIdAndDelete(id).exec();
     if (!result) {
       throw new NotFoundException(`Employee with id ${id} not found`);
     }
