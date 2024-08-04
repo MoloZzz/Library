@@ -52,6 +52,7 @@ export class BooksController {
   }
 
   @Put(':id')
+  @UseGuards(LoggedGuard)
   @ApiOperation({ summary: 'Update a book by id' })
   @ApiCookieAuth()
   async update(@Param() params: IdEntryDto, @Body() body: UpdateBookDto) {
@@ -59,7 +60,6 @@ export class BooksController {
   }
 
   @Delete(':id')
-  @UseGuards(LoggedGuard)
   @ApiOperation({ summary: 'Delete a book by id' })
   @ApiCookieAuth()
   async delete(@Param() params: IdEntryDto) {

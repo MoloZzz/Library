@@ -26,15 +26,6 @@ export class UpdateEmployeeDto {
   position?: string;
 
   @ApiProperty({
-    description: 'Employment date of the employee',
-    example: '2023-01-01T00:00:00.000Z',
-    required: false,
-  })
-  @IsOptional()
-  @IsDate()
-  employmentDate?: Date;
-
-  @ApiProperty({
     description: 'Role of the employee',
     example: 'USER',
     required: false,

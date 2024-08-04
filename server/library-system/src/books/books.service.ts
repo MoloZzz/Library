@@ -105,7 +105,7 @@ export class BooksService {
   }
 
   async delete(id: string) {
-    return this.bookModel.findByIdAndDelete(id).exec();
+    return this.bookModel.findByIdAndDelete(id, { isActive: false }).exec();
   }
 
   async findByName(title: string): Promise<Book> {

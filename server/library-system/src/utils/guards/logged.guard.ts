@@ -17,18 +17,15 @@ export class LoggedGuard implements CanActivate {
     const token = this.extractTokenFromHeader(request);
 
     if (!token) {
-      console.log('No token found in request headers');
       return false;
     }
 
     try {
       const secret = this.configService.get<string>('JWT_SECRET');
       const decoded = jwt.verify(token, secret);
-      console.log('Decoded JWT:', decoded);
       request.user = decoded;
       return true;
     } catch (err) {
-      console.error('Invalid token:', err.message);
       return false;
     }
   }
